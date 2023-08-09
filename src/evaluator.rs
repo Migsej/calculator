@@ -25,7 +25,7 @@ fn evaluate_sequence(equation: Vec<Operation>) -> Option<Operation> {
 
 pub fn evaluate(mut equation: Vec<Operation>) -> Option<f64> {
     let mut open_parenthesis = 0;
-    let mut closed_parenthesis = 0;
+    let mut closed_parenthesis;
     let mut index = 0;
     while equation.contains(&Operation::OpenParenthesis) {
         while equation[index] != Operation::ClosedParenthesis {
