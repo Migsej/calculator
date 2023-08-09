@@ -6,6 +6,8 @@ enum Operation{
     Minus,
     Divide,
     Multiply,
+    OpenParenthesis,
+    ClosedParenthesis,
 }
 
 fn operate<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Option<Vec<Operation>> 
@@ -20,21 +22,56 @@ fn operate<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Op
     return Some(equation)
 }
 
-fn evaluate(equation: Vec<Operation>) -> Option<f64> {
+fn evaluate_sequence(equation: Vec<Operation>) -> Option<Operation> {
     let multiplied = operate(equation, Operation::Multiply,|a, b| a*b )?;
     let divided = operate(multiplied, Operation::Divide ,|a, b| a/b )?;
     let plussed = operate(divided, Operation::Plus ,|a, b| a+b )?;
     let minussed = operate(plussed, Operation::Minus ,|a, b| a-b )?;
     if minussed.len() == 1 {
-        if let Operation::Number(n) = minussed[0] {
-            return Some(n)
-        }
+        return Some(minussed[0].clone());
     }
     return None
 }
 
+fn evaluate(mut equation: Vec<Operation>) -> Option<f64> {
+    let mut open_parenthesis = 0;
+    let mut closed_parenthesis = 0;
+    let mut index = 0;
+    while equation.contains(&Operation::OpenParenthesis) {
+        while equation[index] != Operation::ClosedParenthesis {
+            if equation[index] == Operation::OpenParenthesis {
+                open_parenthesis = index;
+            }
+            index += 1;
+        }
+        closed_parenthesis = index;
+        let evalparen = evaluate_sequence(equation[(open_parenthesis+1)..=(closed_parenthesis - 1)].to_vec());
+        equation.splice(open_parenthesis..=closed_parenthesis, vec![evalparen.unwrap()]);
+        index = 0;
+    }
+    if let Some(Operation::Number(n)) = evaluate_sequence(equation) {
+        return Some(n);
+    }
+    return None
+
+}
+
 fn parse(equation: String) -> Vec<Operation> {
-    equation.split_whitespace()
+    equation
+        .chars()
+        .map(|x| {
+            match x {
+                '(' => " ( ".to_string(),
+                ')' => " ) ".to_string(),
+                '+' => " + ".to_string(),
+                '*' => " * ".to_string(),
+                '/' => " / ".to_string(),
+                '-' => " - ".to_string(),
+                _ => x.to_string(),
+            }
+        })
+        .collect::<String>()
+        .split_whitespace()
         .map(|x| {
             match x.parse::<f64>() {
                 Ok(n) => Some(Operation::Number(n)),
@@ -43,6 +80,8 @@ fn parse(equation: String) -> Vec<Operation> {
                                 "*" => Some(Operation::Multiply),
                                 "/" => Some(Operation::Divide),
                                 "-" => Some(Operation::Minus),
+                                "(" => Some(Operation::OpenParenthesis),
+                                ")" => Some(Operation::ClosedParenthesis),
                                 _ => None,
                             }}
                     }
@@ -52,7 +91,7 @@ fn parse(equation: String) -> Vec<Operation> {
 
 
 fn main() {
-    let equation: String = "3 * 3 + 5 + 2 * 2 + 3 - 3 * 5 / 1231231 + 44".to_string();
+    let equation: String = "1+(2+3+(6*2) + (3+4))".to_string();
 
     let parsed: Vec<Operation> = parse(equation); 
     let evaluated = evaluate(parsed);
