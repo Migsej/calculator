@@ -3,8 +3,10 @@ use crate::Operation;
 fn operate<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Result<Vec<Operation>, &'static str> 
             where F: Fn(f64, f64) -> f64 {
     while let Some(index) = equation.iter().rposition(|x| x == &operation) {
-        if let (Operation::Number(a), Operation::Number(b)) = (equation[index-1], equation[index+1]) {
-            equation.splice((index-1)..(index+2), vec![Operation::Number(func(a,b))]);
+        let firstoperand = equation.get(index-1).ok_or("do it right")?;
+        let secondoperand = equation.get(index+1).ok_or("do it right")?;
+        if let (Operation::Number(a), Operation::Number(b)) = (firstoperand,secondoperand) {
+            equation.splice((index-1)..=(index+1), vec![Operation::Number(func(*a,*b))]);
         } else {
             return Err("something when wrong calculating")
         }
@@ -29,7 +31,7 @@ pub fn evaluate(mut equation: Vec<Operation>) ->  Result<f64,  &'static str>{
     let mut closed_parenthesis;
     let mut index = 0;
     while equation.contains(&Operation::OpenParenthesis) {
-        while equation[index] != Operation::ClosedParenthesis {
+        while equation.get(index).ok_or("ya parenthesis is wrong mate")? != &Operation::ClosedParenthesis {
             if equation[index] == Operation::OpenParenthesis {
                 open_parenthesis = index;
             }
