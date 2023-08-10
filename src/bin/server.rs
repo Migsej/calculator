@@ -8,8 +8,8 @@ use calculator::eval_string;
 fn hello(equation: String) -> String {
     let result = eval_string(equation);
     match result {
-        Some(value) => format!("{}", value),
-        None => format!("Error"),
+        Ok(value) => format!("{}", value),
+        Err(value) => format!("{}", value),
     }
 
 }

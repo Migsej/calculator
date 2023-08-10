@@ -1,7 +1,7 @@
 use crate::Operation;
 
-pub fn parse(equation: String) -> Vec<Operation> {
-    equation
+pub fn parse(equation: String) -> Result<Vec<Operation>, &'static str> {
+    let parsed: Vec<Option<Operation>> = equation
         .chars()
         .map(|x| {
             match x {
@@ -31,6 +31,15 @@ pub fn parse(equation: String) -> Vec<Operation> {
                                 _ => None,
                             }}
                     }
-            }).filter(|x| x.is_some()).map(|x| x.unwrap())
-                .collect()
+            }).collect();
+
+        let filtered: Vec<Operation> = parsed.iter()
+            .filter(|x| x.is_some())
+            .map(|x| x.unwrap())
+            .collect();
+
+        if parsed.len() == filtered.len() {
+            return Ok(filtered)
+        }
+        return Err("couldnt parse string")
 }

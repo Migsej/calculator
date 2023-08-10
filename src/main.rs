@@ -8,8 +8,8 @@ fn main() {
         let evaluated = eval_string(equation);
 
         match evaluated {
-            Some(n) => println!("{}", n),
-            None => println!("Error"),
+            Ok(n) => println!("{}", n),
+            Err(s) => println!("{}", s),
         }
 
     } 
