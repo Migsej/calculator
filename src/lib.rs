@@ -9,6 +9,7 @@ pub enum Operation{
     Minus,
     Divide,
     Multiply,
+    Exponent,
     OpenParenthesis,
     ClosedParenthesis,
 }
@@ -39,5 +40,12 @@ mod tests {
         let evaluated = eval_string(equation);
         assert_eq!(evaluated, Some(12.0));
     }
+    #[test]
+    fn test_exponent() {
+        let equation: String = "2^3".to_string();
+        let evaluated = eval_string(equation);
+        assert_eq!(evaluated, Some(8.0));
+    }
+
 }
 

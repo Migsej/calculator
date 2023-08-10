@@ -13,7 +13,8 @@ fn operate<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Op
 }
 
 fn evaluate_sequence(equation: Vec<Operation>) -> Option<Operation> {
-    let multiplied = operate(equation, Operation::Multiply,|a, b| a*b )?;
+    let exponented = operate(equation, Operation::Exponent,|a, b| a.powf(b) )?;
+    let multiplied = operate(exponented, Operation::Multiply,|a, b| a*b )?;
     let divided = operate(multiplied, Operation::Divide ,|a, b| a/b )?;
     let plussed = operate(divided, Operation::Plus ,|a, b| a+b )?;
     let minussed = operate(plussed, Operation::Minus ,|a, b| a-b )?;

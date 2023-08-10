@@ -10,6 +10,7 @@ pub fn parse(equation: String) -> Vec<Operation> {
                 '+' => " + ".to_string(),
                 '*' => " * ".to_string(),
                 '/' => " / ".to_string(),
+                '^' => " ^ ".to_string(),
                 '-' => " - ".to_string(),
                 _ => x.to_string(),
             }
@@ -21,6 +22,7 @@ pub fn parse(equation: String) -> Vec<Operation> {
                 Ok(n) => Some(Operation::Number(n)),
                 Err(_s) => { match x {
                                 "+" => Some(Operation::Plus),
+                                "^" => Some(Operation::Exponent),
                                 "*" => Some(Operation::Multiply),
                                 "/" => Some(Operation::Divide),
                                 "-" => Some(Operation::Minus),
