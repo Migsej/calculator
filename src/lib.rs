@@ -47,5 +47,12 @@ mod tests {
         assert_eq!(evaluated, Ok(8.0));
     }
 
+    #[test]
+    fn test_exponent() {
+        let equation: String = "1+(2*(5+7)+(5*1))".to_string();
+        let evaluated = eval_string(equation);
+        assert_eq!(evaluated, Ok(30.0));
+    }
+
 }
 
