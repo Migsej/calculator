@@ -46,6 +46,13 @@ mod tests {
         let evaluated = eval_string(equation);
         assert_eq!(evaluated, Ok(8.0));
     }
+    #[test]
+    fn test_plus() {
+        let equation: String = "2+2".to_string();
+        let evaluated = eval_string(equation);
+        assert_eq!(evaluated, Ok(4.0));
+    }
+
 
 }
 
