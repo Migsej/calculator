@@ -1,49 +1,36 @@
 use crate::Operation;
+use pest::Parser;
+use pest_derive::Parser;
+use anyhow::Result;
 
-pub fn parse(equation: String) -> Result<Vec<Operation>, &'static str> {
-    let split = equation 
-        .chars()
-        .map(|x| {
-            match x {
-                '(' => " ( ".to_string(),
-                ')' => " ) ".to_string(),
-                '+' => " + ".to_string(),
-                '*' => " * ".to_string(),
-                '/' => " / ".to_string(),
-                '^' => " ^ ".to_string(),
-                '-' => " - ".to_string(),
-                's' => " s ".to_string(),
-                _   => x.to_string(),
-            }
-        })
-        .collect::<String>();
+#[derive(Parser)]
+#[grammar = "parser.pest"] 
+struct EquationParser;
 
-    let parsed: Vec<Option<Operation>> = split
-        .split_whitespace()
-        .map(|x| {
-            match x.parse::<f64>() {
-                Ok(n) => Some(Operation::Number(n)),
-                Err(_s) => { match x {
-                                "+" => Some(Operation::Plus),
-                                "^" => Some(Operation::Exponent),
-                                "*" => Some(Operation::Multiply),
-                                "/" => Some(Operation::Divide),
-                                "-" => Some(Operation::Minus),
-                                "(" => Some(Operation::OpenParenthesis),
-                                ")" => Some(Operation::ClosedParenthesis),
-                                "s" => Some(Operation::Sqrt),
-                                _ => None,
-                            }}
-                    }
-            }).collect();
+pub fn parse(equation: String) -> Result<Vec<Operation>> {
+    let parsedequ = EquationParser::parse(Rule::equation, &equation)?.next().unwrap();
+    
+    let mut result = Vec::new();
 
-        let filtered: Vec<Operation> = parsed.iter()
-            .filter(|x| x.is_some())
-            .map(|x| x.unwrap())
-            .collect();
-
-        if parsed.len() == filtered.len() {
-            return Ok(filtered)
-        }
-        return Err("couldnt parse string")
+    for iden in parsedequ.into_inner() {
+        let bla = match iden.as_rule() {
+            Rule::number => {
+                let number = iden
+                    .as_str()
+                    .parse::<f64>()?;
+                Operation::Number(number)
+            },
+            Rule::plus => Operation::Plus,
+            Rule::minus => Operation::Minus,
+            Rule::multiply => Operation::Multiply,
+            Rule::divide => Operation::Divide,
+            Rule::sqrt => Operation::Sqrt,
+            Rule::exponent => Operation::Exponent,
+            Rule::openparen => Operation::OpenParenthesis,
+            Rule::closedparen => Operation::ClosedParenthesis,
+            _ => unreachable!(),
+        };
+        result.push(bla);
+    }
+    Ok(result)
 }

@@ -1,0 +1,19 @@
+number = @{
+    "-"?
+    ~ ("0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
+    ~ ("." ~ ASCII_DIGIT*)?
+    ~ (^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+)?
+}
+plus = { "+" }
+minus = { "-" }
+multiply = { "*" }
+divide = { "/" }
+sqrt = { "sqrt" }
+openparen = { "(" }
+closedparen = { ")" }
+exponent = { "^" }
+
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+
+equation = { (  exponent | plus | minus | multiply | divide | sqrt | openparen | closedparen | number )+}
+
