@@ -1,7 +1,7 @@
 use crate::Operation;
 
 pub fn parse(equation: String) -> Result<Vec<Operation>, &'static str> {
-    let parsed: Vec<Option<Operation>> = equation
+    let split = equation 
         .chars()
         .map(|x| {
             match x {
@@ -12,10 +12,14 @@ pub fn parse(equation: String) -> Result<Vec<Operation>, &'static str> {
                 '/' => " / ".to_string(),
                 '^' => " ^ ".to_string(),
                 '-' => " - ".to_string(),
-                _ => x.to_string(),
+                's' => " s ".to_string(),
+                _   => x.to_string(),
             }
         })
-        .collect::<String>()
+        .collect::<String>();
+    println!("{}", split);
+
+    let parsed: Vec<Option<Operation>> = split
         .split_whitespace()
         .map(|x| {
             match x.parse::<f64>() {
@@ -28,6 +32,7 @@ pub fn parse(equation: String) -> Result<Vec<Operation>, &'static str> {
                                 "-" => Some(Operation::Minus),
                                 "(" => Some(Operation::OpenParenthesis),
                                 ")" => Some(Operation::ClosedParenthesis),
+                                "s" => Some(Operation::Sqrt),
                                 _ => None,
                             }}
                     }

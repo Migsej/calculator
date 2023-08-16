@@ -12,6 +12,7 @@ pub enum Operation{
     Exponent,
     OpenParenthesis,
     ClosedParenthesis,
+    Sqrt,
 }
 
 pub fn eval_string(equation: String) -> Result<f64,  &'static str> {
@@ -52,12 +53,17 @@ mod tests {
         let evaluated = eval_string(equation);
         assert_eq!(evaluated, Ok(4.0));
     }
-
     #[test]
     fn test_minus() {
         let equation: String = "2-2".to_string();
         let evaluated = eval_string(equation);
         assert_eq!(evaluated, Ok(0.0));
+    }
+    #[test]
+    fn test_sqrt() {
+        let equation: String = "s (2+2)".to_string();
+        let evaluated = eval_string(equation);
+        assert_eq!(evaluated, Ok(2.0));
     }
 
 }

@@ -1,5 +1,19 @@
 use crate::Operation;
 
+
+fn operatesingle<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Result<Vec<Operation>, &'static str> 
+            where F: Fn(f64) -> f64 {
+    while let Some(index) = equation.iter().rposition(|x| x == &operation) {
+        let operand = equation.get(index+1).ok_or("do it right")?;
+        if let Operation::Number(a) = operand {
+            equation.splice((index)..=(index+1), vec![Operation::Number(func(*a))]);
+        } else {
+            return Err("something when wrong calculating")
+        }
+    }
+    return Ok(equation)
+}
+
 fn operate<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Result<Vec<Operation>, &'static str> 
             where F: Fn(f64, f64) -> f64 {
     while let Some(index) = equation.iter().rposition(|x| x == &operation) {
@@ -15,7 +29,8 @@ fn operate<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Re
 }
 
 fn evaluate_sequence(equation: Vec<Operation>) -> Result<Operation,  &'static str>{
-    let exponented = operate(equation, Operation::Exponent,|a, b| a.powf(b) )?;
+    let squirted = operatesingle(equation, Operation::Sqrt, |a| a.sqrt() )?;
+    let exponented = operate(squirted, Operation::Exponent,|a, b| a.powf(b) )?;
     let multiplied = operate(exponented, Operation::Multiply,|a, b| a*b )?;
     let divided = operate(multiplied, Operation::Divide ,|a, b| a/b )?;
     let plussed = operate(divided, Operation::Plus ,|a, b| a+b )?;
