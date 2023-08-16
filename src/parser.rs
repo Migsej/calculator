@@ -17,7 +17,6 @@ pub fn parse(equation: String) -> Result<Vec<Operation>, &'static str> {
             }
         })
         .collect::<String>();
-    println!("{}", split);
 
     let parsed: Vec<Option<Operation>> = split
         .split_whitespace()
