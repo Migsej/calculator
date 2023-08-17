@@ -18,7 +18,7 @@ pub enum Operation{
 }
 
 pub fn eval_string(equation: String) -> Result<f64> {
-    let parsed = parser::parse(equation)?; 
+    let parsed: Vec<Operation> = parser::parse(equation)?; 
     evaluator::evaluate(parsed)
 }
 

@@ -1,43 +1,51 @@
 use crate::Operation;
 use anyhow::{bail, Context, Result};
 
-
-fn operatesingle<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Result<Vec<Operation>> 
-            where F: Fn(f64) -> f64 {
-    while let Some(index) = equation.iter().rposition(|x| x == &operation) {
-        let operand = equation.get(index+1).context("do it right")?;
-        if let Operation::Number(a) = operand {
-            equation.splice((index)..=(index+1), vec![Operation::Number(func(*a))]);
-        } else {
-            bail!("something when wrong calculating")
-        }
-    }
-    return Ok(equation)
+struct Operator{
+    equation: Vec<Operation>,
 }
 
-fn operate<F>(mut equation: Vec<Operation>, operation: Operation, func: F) -> Result<Vec<Operation>>
-            where F: Fn(f64, f64) -> f64 {
-    while let Some(index) = equation.iter().rposition(|x| x == &operation) {
-        let firstoperand = equation.get(index-1).context("do it right")?;
-        let secondoperand = equation.get(index+1).context("do it right")?;
-        if let (Operation::Number(a), Operation::Number(b)) = (firstoperand,secondoperand) {
-            equation.splice((index-1)..=(index+1), vec![Operation::Number(func(*a,*b))]);
-        } else {
-            bail!("something when wrong calculating")
+impl Operator {
+    fn operatesingle<F>(mut self, operation: Operation, func: F) -> Result<Operator> 
+                where F: Fn(f64) -> f64 {
+        while let Some(index) = self.equation.iter().rposition(|x| x == &operation) {
+            let operand = self.equation.get(index+1).context("do it right")?;
+            if let Operation::Number(a) = operand {
+                self.equation.splice((index)..=(index+1), vec![Operation::Number(func(*a))]);
+            } else {
+                bail!("something when wrong calculating")
+            }
         }
+        return Ok(self)
     }
-    return Ok(equation)
-}
 
+    fn operate<F>(mut self, operation: Operation, func: F) -> Result<Operator>
+                where F: Fn(f64, f64) -> f64 {
+        while let Some(index) = self.equation.iter().rposition(|x| x == &operation) {
+            let firstoperand = self.equation.get(index-1).context("do it right")?;
+            let secondoperand = self.equation.get(index+1).context("do it right")?;
+            if let (Operation::Number(a), Operation::Number(b)) = (firstoperand,secondoperand) {
+                self.equation.splice((index-1)..=(index+1), vec![Operation::Number(func(*a,*b))]);
+            } else {
+                bail!("something when wrong calculating")
+            }
+        }
+        return Ok(self)
+    }
+
+}
 fn evaluate_sequence(equation: Vec<Operation>) -> Result<Operation>{
-    let squirted = operatesingle(equation, Operation::Sqrt, |a| a.sqrt() )?;
-    let exponented = operate(squirted, Operation::Exponent,|a, b| a.powf(b) )?;
-    let multiplied = operate(exponented, Operation::Multiply,|a, b| a*b )?;
-    let divided = operate(multiplied, Operation::Divide ,|a, b| a/b )?;
-    let plussed = operate(divided, Operation::Plus ,|a, b| a+b )?;
-    let minussed = operate(plussed, Operation::Minus ,|a, b| a-b )?;
-    if minussed.len() == 1 {
-        return Ok(minussed[0].clone());
+    let operator = Operator{equation};
+    let result = operator
+        .operatesingle(Operation::Sqrt, |a| a.sqrt() )?
+        .operate(Operation::Exponent,|a, b| a.powf(b) )?
+        .operate(Operation::Multiply,|a, b| a*b )?
+        .operate(Operation::Divide ,|a, b| a/b )?
+        .operate(Operation::Plus ,|a, b| a+b )?
+        .operate(Operation::Minus ,|a, b| a-b )?;
+
+    if result.equation.len() == 1 {
+        return Ok(result.equation[0].clone());
     }
     bail!("couldnt evaluate sequence")
 }
