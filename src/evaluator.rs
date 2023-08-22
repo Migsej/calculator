@@ -1,6 +1,7 @@
 use crate::Operation;
 use anyhow::{bail, Context, Result};
 
+#[derive(Clone)]
 struct Operator{
     equation: Vec<Operation>,
 }
@@ -22,7 +23,10 @@ impl Operator {
     fn operate<F>(mut self, operation: Operation, func: F) -> Result<Operator>
                 where F: Fn(f64, f64) -> f64 {
         while let Some(index) = self.equation.iter().rposition(|x| x == &operation) {
-            let firstoperand = self.equation.get(index-1).context("do it right")?;
+            if  index == 0 {
+                bail!("cant operate on first element")
+            }
+            let firstoperand = self.equation.get(index -1).context("do it right")?;
             let secondoperand = self.equation.get(index+1).context("do it right")?;
             if let (Operation::Number(a), Operation::Number(b)) = (firstoperand,secondoperand) {
                 self.equation.splice((index-1)..=(index+1), vec![Operation::Number(func(*a,*b))]);
@@ -32,10 +36,26 @@ impl Operator {
         }
         return Ok(self)
     }
+    /// should make a number followed by a negative number be number minus number
+    fn fixminus(&mut self) -> &mut Operator {
+        for (i, v) in self.equation.clone().iter().enumerate() {
+            if let Operation::Number(num) = v {
+                if i == 0 {
+                    //pass
+                }else if let Operation::Number(_) = self.clone().equation[i-1] {
+                    if num < &0.0 {
+                        self.equation.splice(i..=i, vec![Operation::Minus, Operation::Number(num*-1.0)]);
+                    }
 
+                }
+            }
+        }
+        return self
+    }
 }
 fn evaluate_sequence(equation: Vec<Operation>) -> Result<Operation>{
-    let operator = Operator{equation};
+    let mut operator = Operator{equation};
+    operator.fixminus();
     let result = operator
         .operatesingle(Operation::Sqrt, |a| a.sqrt() )?
         .operate(Operation::Exponent,|a, b| a.powf(b) )?
@@ -66,10 +86,12 @@ pub fn evaluate(mut equation: Vec<Operation>) ->  Result<f64>{
         equation.splice(open_parenthesis..=closed_parenthesis, vec![evalparen.unwrap()]);
         index = 0;
     }
-    if let Ok(Operation::Number(n)) = evaluate_sequence(equation) {
+   if let Operation::Number(n) = evaluate_sequence(equation)? {
         return Ok(n);
-    }
-    bail!("couldnt evaluate string") 
+   } else {
+        bail!("couldnt evaluate string")
+   }
+
 
 }
 

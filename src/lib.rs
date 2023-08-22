@@ -68,6 +68,13 @@ mod tests {
         Ok(())
     }
     #[test]
+    fn test_negative() -> Result<()> {
+        let equation: String = "2+(-2)".to_string();
+        let evaluated = eval_string(equation)?;
+        assert_eq!(evaluated, 0.0);
+        Ok(())
+    }
+    #[test]
     fn test_sqrt() -> Result<()> {
         let equation: String = "sqrt (2+2)".to_string();
         let evaluated = eval_string(equation)?;

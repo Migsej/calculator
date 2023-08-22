@@ -15,5 +15,5 @@ exponent = { "^" }
 
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
-equation = { (  exponent | plus | minus | multiply | divide | sqrt | openparen | closedparen | number )+}
+equation = { (  exponent | plus |  multiply | divide | sqrt | openparen | closedparen | number | minus )+}
 
