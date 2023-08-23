@@ -58,6 +58,8 @@ fn evaluate_sequence(equation: Vec<Operation>) -> Result<Operation>{
     operator.fixminus();
     let result = operator
         .operatesingle(Operation::Sqrt, |a| a.sqrt() )?
+        .operatesingle(Operation::Cos, |a| a.cos() )?
+        .operatesingle(Operation::Sin, |a| a.sin() )?
         .operate(Operation::Exponent,|a, b| a.powf(b) )?
         .operate(Operation::Multiply,|a, b| a*b )?
         .operate(Operation::Divide ,|a, b| a/b )?

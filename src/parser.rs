@@ -25,6 +25,8 @@ pub fn parse(equation: String) -> Result<Vec<Operation>> {
             Rule::multiply => Operation::Multiply,
             Rule::divide => Operation::Divide,
             Rule::sqrt => Operation::Sqrt,
+            Rule::sin => Operation::Sin,
+            Rule::cos => Operation::Cos,
             Rule::exponent => Operation::Exponent,
             Rule::openparen => Operation::OpenParenthesis,
             Rule::closedparen => Operation::ClosedParenthesis,

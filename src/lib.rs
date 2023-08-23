@@ -15,6 +15,8 @@ pub enum Operation{
     OpenParenthesis,
     ClosedParenthesis,
     Sqrt,
+    Cos,
+    Sin,
 }
 
 pub fn eval_string(equation: String) -> Result<f64> {

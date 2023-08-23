@@ -9,11 +9,13 @@ minus = { "-" }
 multiply = { "*" }
 divide = { "/" }
 sqrt = { "sqrt" }
+cos = { "cos" }
+sin = { "sin" }
 openparen = { "(" }
 closedparen = { ")" }
 exponent = { "^" }
 
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
-equation = { (  exponent | plus |  multiply | divide | sqrt | openparen | closedparen | number | minus )+}
+equation = { (  sin | cos | exponent | plus |  multiply | divide | sqrt | openparen | closedparen | number | minus )+}
 
