@@ -13,26 +13,48 @@ pub fn parse(equation: String) -> Result<Vec<Operation>> {
     let mut result = Vec::new();
 
     for iden in parsedequ.into_inner() {
-        let bla = match iden.as_rule() {
+        let mut bla = match iden.as_rule() {
             Rule::number => {
                 let number = iden
                     .as_str()
                     .parse::<f64>()?;
-                Operation::Number(number)
+                vec![Operation::Number(number)]
             },
-            Rule::plus => Operation::Plus,
-            Rule::minus => Operation::Minus,
-            Rule::multiply => Operation::Multiply,
-            Rule::divide => Operation::Divide,
-            Rule::sqrt => Operation::Sqrt,
-            Rule::sin => Operation::Sin,
-            Rule::cos => Operation::Cos,
-            Rule::exponent => Operation::Exponent,
-            Rule::openparen => Operation::OpenParenthesis,
-            Rule::closedparen => Operation::ClosedParenthesis,
+            Rule::plus => vec![Operation::Plus],
+            Rule::minus => vec![Operation::Minus],
+            Rule::multiply => vec![Operation::Multiply],
+            Rule::divide => vec![Operation::Divide],
+            Rule::sqrt => vec![Operation::Sqrt],
+            Rule::sin => vec![Operation::Sin],
+            Rule::cos => vec![Operation::Cos],
+            Rule::raised_number => {
+                let uuuh = parse_raised(iden.as_str())?;
+                vec![Operation::Exponent, Operation::Number(uuuh)]
+            },
+            Rule::exponent => vec![Operation::Exponent],
+            Rule::openparen => vec![Operation::OpenParenthesis],
+            Rule::closedparen => vec![Operation::ClosedParenthesis],
             _ => unreachable!(),
         };
-        result.push(bla);
+        result.append(&mut bla);
     }
     Ok(result)
+}
+
+fn parse_raised(num: &str) -> Result<f64> {
+    Ok(num.chars().map(|x| {
+        match x {
+            '¹' => '1',
+            '²' => '2',
+            '³' => '3',
+            '⁴' => '4',
+            '⁵' => '5',
+            '⁶' => '6',
+            '⁷' => '7',
+            '⁸' => '8',
+            '⁹' => '9',
+            '⁰' => '0',
+            _   => x,
+        }
+        }).collect::<String>().parse::<f64>()?)
 }

@@ -15,7 +15,15 @@ openparen = { "(" }
 closedparen = { ")" }
 exponent = { "^" }
 
+raised_number = @{
+    "-"?
+    ~ (raised_digit ~ raised_digit*)
+    ~ ("." ~ raised_digit*)?
+}
+
+raised_digit = { "¹" | "²" | "³" | "⁴" | "⁵" | "⁶" | "⁷" | "⁸" | "⁹" | "⁰"  }
+
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
-equation = { (  sin | cos | exponent | plus |  multiply | divide | sqrt | openparen | closedparen | number | minus )+}
+equation = { (raised_number |  sin | cos | exponent | plus |  multiply | divide | sqrt | openparen | closedparen | number | minus )+}
 
