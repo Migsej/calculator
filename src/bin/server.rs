@@ -1,6 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
 use calculator::eval_string;
 
@@ -11,7 +12,6 @@ fn hello(equation: String) -> String {
         Ok(value) => format!("{}", value),
         Err(value) => format!("{}", value),
     }
-
 }
 
 fn main() {

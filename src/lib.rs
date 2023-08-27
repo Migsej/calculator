@@ -1,11 +1,10 @@
 use anyhow::Result;
 
-pub mod parser;
 pub mod evaluator;
-
+pub mod parser;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
-pub enum Operation{
+pub enum Operation {
     Number(f64),
     Plus,
     Minus,
@@ -20,7 +19,7 @@ pub enum Operation{
 }
 
 pub fn eval_string(equation: String) -> Result<f64> {
-    let parsed: Vec<Operation> = parser::parse(equation)?; 
+    let parsed: Vec<Operation> = parser::parse(equation)?;
     evaluator::evaluate(parsed)
 }
 
@@ -38,7 +37,7 @@ mod tests {
             }
         };
     }
-    test_eval!(test_eval, "1+2+3+6*2 + 3+4" , 25.0);
+    test_eval!(test_eval, "1+2+3+6*2 + 3+4", 25.0);
     test_eval!(test_parser, "99999+9+3+6*2 + 3+4", 100030.0);
     test_eval!(test_paren, "2*(5+1)", 12.0);
     test_eval!(test_exponent, "2^3", 8.0);
@@ -47,4 +46,3 @@ mod tests {
     test_eval!(test_negative, "2+(-2)", 0.0);
     test_eval!(test_sqrt, "sqrt (2+2)", 2.0);
 }
-

@@ -3,7 +3,9 @@ use std::io;
 
 fn main() {
     let mut equation = String::new();
-    io::stdin().read_line(&mut equation).expect("Failed to read line");
+    io::stdin()
+        .read_line(&mut equation)
+        .expect("Failed to read line");
     let evaluated = eval_string(equation);
 
     match evaluated {

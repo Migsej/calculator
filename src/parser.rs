@@ -1,25 +1,25 @@
 use crate::Operation;
+use anyhow::Result;
 use pest::Parser;
 use pest_derive::Parser;
-use anyhow::Result;
 
 #[derive(Parser)]
-#[grammar = "parser.pest"] 
+#[grammar = "parser.pest"]
 struct EquationParser;
 
 pub fn parse(equation: String) -> Result<Vec<Operation>> {
-    let parsedequ = EquationParser::parse(Rule::equation, &equation)?.next().unwrap();
-    
+    let parsedequ = EquationParser::parse(Rule::equation, &equation)?
+        .next()
+        .unwrap();
+
     let mut result = Vec::new();
 
     for iden in parsedequ.into_inner() {
         let mut bla = match iden.as_rule() {
             Rule::number => {
-                let number = iden
-                    .as_str()
-                    .parse::<f64>()?;
+                let number = iden.as_str().parse::<f64>()?;
                 vec![Operation::Number(number)]
-            },
+            }
             Rule::plus => vec![Operation::Plus],
             Rule::minus => vec![Operation::Minus],
             Rule::multiply => vec![Operation::Multiply],
@@ -30,7 +30,7 @@ pub fn parse(equation: String) -> Result<Vec<Operation>> {
             Rule::raised_number => {
                 let uuuh = parse_raised(iden.as_str())?;
                 vec![Operation::Exponent, Operation::Number(uuuh)]
-            },
+            }
             Rule::exponent => vec![Operation::Exponent],
             Rule::openparen => vec![Operation::OpenParenthesis],
             Rule::closedparen => vec![Operation::ClosedParenthesis],
@@ -42,8 +42,9 @@ pub fn parse(equation: String) -> Result<Vec<Operation>> {
 }
 
 fn parse_raised(num: &str) -> Result<f64> {
-    Ok(num.chars().map(|x| {
-        match x {
+    Ok(num
+        .chars()
+        .map(|x| match x {
             '¹' => '1',
             '²' => '2',
             '³' => '3',
@@ -54,7 +55,8 @@ fn parse_raised(num: &str) -> Result<f64> {
             '⁸' => '8',
             '⁹' => '9',
             '⁰' => '0',
-            _   => x,
-        }
-        }).collect::<String>().parse::<f64>()?)
+            _ => x,
+        })
+        .collect::<String>()
+        .parse::<f64>()?)
 }
