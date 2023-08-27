@@ -37,7 +37,7 @@ impl Operator {
         return Ok(self)
     }
     /// should make a number followed by a negative number be number minus number
-    fn fixminus(&mut self) -> &mut Operator {
+    fn fixminus(mut self) -> Operator {
         for (i, v) in self.equation.clone().iter().enumerate() {
             if let Operation::Number(num) = v {
                 if i == 0 {
@@ -50,13 +50,13 @@ impl Operator {
                 }
             }
         }
-        return self
+        return self.clone()
     }
 }
 fn evaluate_sequence(equation: Vec<Operation>) -> Result<Operation>{
-    let mut operator = Operator{equation};
-    operator.fixminus();
+    let operator = Operator{equation};
     let result = operator
+        .fixminus()
         .operatesingle(Operation::Sqrt, |a| a.sqrt() )?
         .operatesingle(Operation::Cos, |a| a.cos() )?
         .operatesingle(Operation::Sin, |a| a.sin() )?
