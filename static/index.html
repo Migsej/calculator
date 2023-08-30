@@ -1,0 +1,9 @@
+<script src="https://unpkg.com/htmx.org@1.9.5"></script>
+<input class="form-control" type="equation" 
+       name="equation" placeholder="Begin Typing To eval Users..." 
+       hx-post="/eval" 
+       hx-trigger="keyup changed delay:500ms, equation" 
+       hx-target="#eval-results" 
+       hx-indicator=".htmx-indicator">
+<div id="eval-results"></div>
+
