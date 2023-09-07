@@ -5,8 +5,7 @@ extern crate rocket;
 
 use calculator::eval_string;
 use serde::{Deserialize, Serialize};
-use rocket_contrib::json::Json;
-use rocket::{response::NamedFile, request::Form};
+use rocket::response::NamedFile;
 use serde_urlencoded;
 use anyhow::Result;
 

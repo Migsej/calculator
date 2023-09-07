@@ -1,9 +1,28 @@
-<script src="https://unpkg.com/htmx.org@1.9.5"></script>
-<input class="form-control" type="equation" 
-       name="equation" placeholder="Begin Typing To eval Users..." 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LOMMEREGNER</title>
+  </head>
+  <body>
+	<script src="https://unpkg.com/htmx.org@1.9.5"></script>
+	<div>
+	<div style="width: 150px; margin-left: auto; margin-right: auto; margin-top: 25%; ">
+	<input class="form-control" type="equation" 
+       name="equation" 
        hx-post="/eval" 
        hx-trigger="keyup changed delay:500ms, equation" 
        hx-target="#eval-results" 
-       hx-indicator=".htmx-indicator">
-<div id="eval-results"></div>
+			 style="text-align: center; font-size: 30px; width: 150px; margin-left: auto; margin-right: auto; margin-top: 25%; "
+			 >
+	</div>
+		<div id="eval-results"</div>
+	</div>
+  </body>
+</html>
+
+
+
 
