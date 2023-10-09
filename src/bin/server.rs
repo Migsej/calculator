@@ -18,7 +18,7 @@ struct Equation {
 
 #[post("/eval", data="<equation>")]
 fn hello(equation: String) -> String {
-    if &equation == "" {
+    if &equation == "equation=" {
         return "".to_string();
     }
     let parsed = serde_urlencoded::from_str::<Equation>(equation.as_str()).expect("asd");
