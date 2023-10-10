@@ -45,12 +45,12 @@ impl Operator {
         return Ok(self);
     }
     /// should make a number followed by a negative number be number minus number
-    fn fixminus(mut self) -> Operator {
+    fn fixminus(mut self) -> Result<Operator> {
         for (i, v) in self.equation.clone().iter().enumerate() {
             if let Operation::Number(num) = v {
                 if i == 0 {
                     //pass
-                } else if let Operation::Number(_) = self.clone().equation[i - 1] {
+                } else if let Operation::Number(_) = &self.equation[i - 1] {
                     if num < &0.0 {
                         self.equation
                             .splice(i..=i, vec![Operation::Minus, Operation::Number(num * -1.0)]);
@@ -58,13 +58,13 @@ impl Operator {
                 }
             }
         }
-        return self.clone();
+        return Ok(self);
     }
 }
 fn evaluate_sequence(equation: Vec<Operation>) -> Result<Operation> {
     let operator = Operator { equation };
     let result = operator
-        .fixminus()
+        .fixminus()?
         .operatesingle(Operation::Sqrt, |a| a.sqrt())?
         .operatesingle(Operation::Cos, |a| a.cos())?
         .operatesingle(Operation::Sin, |a| a.sin())?

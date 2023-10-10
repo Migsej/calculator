@@ -5,25 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>LOMMEREGNER</title>
+    <style>
+			body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .input-container {
+        width: 600px; 
+        margin: 0 auto;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
-	<script src="https://unpkg.com/htmx.org@1.9.5"></script>
-	<div>
-	<div style="width: 150px; margin-left: auto; margin-right: auto; margin-top: 25%; ">
-	<input class="form-control" type="equation" 
-       name="equation" 
-       hx-post="/eval" 
-       hx-trigger="keyup changed delay:500ms, equation" 
-       hx-target="#eval-results" 
-			 style="text-align: center; font-size: 30px; width: 150px; margin-left: auto; margin-right: auto; margin-top: 25%; "
-			 >
-	</div>
-		<div id="eval-results" style="text-align: center; font-size: 30px; width: 150px; margin-left: auto; margin-right: auto;  ">
-		</div>
-	</div>
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+    <div class="input-container">
+      <input class="form-control" type="equation" 
+             name="equation" 
+             hx-post="/eval" 
+             hx-trigger="keyup changed delay:10ms, equation" 
+             hx-target="#eval-results" 
+             style="text-align: center; font-size: 30px; width: 100%;"
+      >
+    </div>
+    <div id="eval-results" style="text-align: center; font-size: 30px; width: 150px; margin: 0 auto;">
+    </div>
   </body>
 </html>
-
-
-
 
